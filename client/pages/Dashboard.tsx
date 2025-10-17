@@ -27,25 +27,36 @@ const COLORS = ["#10B981", "#3B82F6", "#8B5CF6", "#F59E0B"];
 export default function Dashboard() {
   const { sessions } = useAuth();
   const total = sessions.length;
+
   const avg = total
-    ? Math.round(sessions.reduce((a, s) => a + s.overallScore, 0) / total)
+    ? Math.round(
+        sessions.reduce((a: number, s) => a + s.overallScore, 0) / total
+      )
     : 0;
-  const timeSpent = sessions.reduce((a, s) => a + s.durationSec, 0);
+
+  const timeSpent = sessions.reduce((a: number, s) => a + s.durationSec, 0);
+
   const accuracy = total
-    ? Math.round(sessions.reduce((a, s) => a + s.speech.clarity, 0) / total)
+    ? Math.round(
+        sessions.reduce((a: number, s) => a + s.speech.clarity, 0) / total
+      )
     : 0;
-  const points = sessions.reduce((a, s) => a + s.overallScore, 0);
+
+  const points = sessions.reduce((a: number, s) => a + s.overallScore, 0);
+
   const progress = Array.from({ length: 7 }).map((_, i) => ({
     day: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][i],
     score: sessions[i]?.overallScore ?? 0,
   }));
+
   const radar = [
     { skill: "Communication", A: accuracy },
     {
       skill: "Confidence",
       A: total
         ? Math.round(
-            sessions.reduce((a, s) => a + s.speech.confidence, 0) / total,
+            sessions.reduce((a: number, s) => a + s.speech.confidence, 0) /
+              total
           )
         : 0,
     },
@@ -56,42 +67,47 @@ export default function Dashboard() {
             100,
             Math.round(
               sessions.reduce(
-                (a, s) =>
+                (a: number, s) =>
                   a + Math.max(0, 100 - Math.abs(150 - s.speech.paceWpm)),
-              ),
-              0,
-            ) / Math.max(total, 1),
+                0
+              ) / Math.max(total, 1)
+            )
           )
         : 0,
     },
     {
       skill: "Posture",
       A: total
-        ? Math.round(sessions.reduce((a, s) => a + s.body.posture, 0) / total)
+        ? Math.round(
+            sessions.reduce((a: number, s) => a + s.body.posture, 0) / total
+          )
         : 0,
     },
     {
       skill: "Stability",
       A: total
         ? Math.round(
-            sessions.reduce((a, s) => a + s.body.headStability, 0) / total,
+            sessions.reduce((a: number, s) => a + s.body.headStability, 0) /
+              total
           )
         : 0,
     },
   ];
+
   const activity = [
     { name: "Interviews", value: total },
     { name: "MCQs", value: 0 },
     { name: "Analytics", value: total ? 5 : 0 },
     { name: "Review", value: total ? 3 : 0 },
   ];
+
   const domainPerf = [
     { domain: "General", accuracy: avg },
     {
       domain: "Body",
       accuracy: total
         ? Math.round(
-            sessions.reduce((a, s) => a + s.body.engagement, 0) / total,
+            sessions.reduce((a: number, s) => a + s.body.engagement, 0) / total
           )
         : 0,
     },
@@ -104,10 +120,7 @@ export default function Dashboard() {
         <div className="grid gap-6 md:grid-cols-6">
           <Stat title="Total Sessions" value={total.toString()} />
           <Stat title="Average Score" value={`${avg}%`} />
-          <Stat
-            title="Time Spent"
-            value={`${Math.round(timeSpent / 60)} min`}
-          />
+          <Stat title="Time Spent" value={`${Math.round(timeSpent / 60)} min`} />
           <Stat title="Current Streak" value={`${total ? 1 : 0} days`} />
           <Stat title="Accuracy" value={`${accuracy}%`} />
           <Stat title="Points" value={points.toString()} />
@@ -138,6 +151,7 @@ export default function Dashboard() {
               </ResponsiveContainer>
             </CardContent>
           </Card>
+
           <Card>
             <CardHeader>
               <CardTitle>Skill Assessment</CardTitle>
@@ -171,15 +185,12 @@ export default function Dashboard() {
                   <XAxis dataKey="domain" stroke="#94a3b8" />
                   <YAxis hide />
                   <Tooltip />
-                  <Bar
-                    dataKey="accuracy"
-                    fill="#3B82F6"
-                    radius={[6, 6, 0, 0]}
-                  />
+                  <Bar dataKey="accuracy" fill="#3B82F6" radius={[6, 6, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
           </Card>
+
           <Card>
             <CardHeader>
               <CardTitle>Activity Distribution</CardTitle>
@@ -224,6 +235,7 @@ export default function Dashboard() {
               </Button>
             </CardContent>
           </Card>
+
           <Card>
             <CardHeader>
               <CardTitle>Recent Sessions</CardTitle>
